@@ -17,7 +17,7 @@ type FilterType = "all" | "online" | "offline";
 
 export default function Home() {
   const { toast } = useToast();
-  
+
   // Connect to WebSocket for real-time updates
   useWebSocket();
   const [filter, setFilter] = useState<FilterType>("all");
@@ -102,7 +102,9 @@ export default function Home() {
   // Toggle status mutation
   const toggleStatusMutation = useMutation({
     mutationFn: async ({ id, isOnline }: { id: string; isOnline: boolean }) => {
-      return await apiRequest("PATCH", `/api/brokers/${id}/status`, { isOnline });
+      return await apiRequest("PATCH", `/api/brokers/${id}/status`, {
+        isOnline,
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/brokers"] });
@@ -134,12 +136,16 @@ export default function Home() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <Building2 className="h-8 w-8 text-primary" />
               <div>
-                <h1 className="text-2xl font-semibold tracking-tight" data-testid="text-title">
-                  Itamar Imóveis
-                </h1>
-                <p className="text-sm text-muted-foreground">Status de Corretores</p>
+                <img
+                  src="/log.png"
+                  alt="Logo Itamar Imóveis"
+                  className="h-20 w-auto object-contain"
+                />
+
+                <p className="text-sm text-muted-foreground">
+                  Status de Corretores
+                </p>
               </div>
             </div>
             <Button
@@ -162,24 +168,45 @@ export default function Home() {
             <div className="flex items-center gap-2 rounded-lg bg-status-online/10 px-4 py-2 border border-status-online/20">
               <div className="h-3 w-3 rounded-full bg-status-online animate-pulse" />
               <span className="text-sm font-medium">
-                <span className="text-lg font-semibold" data-testid="text-online-count">{onlineCount}</span> Online
+                <span
+                  className="text-lg font-semibold"
+                  data-testid="text-online-count"
+                >
+                  {onlineCount}
+                </span>{" "}
+                Online
               </span>
             </div>
             <div className="flex items-center gap-2 rounded-lg bg-status-offline/10 px-4 py-2 border border-status-offline/20">
               <div className="h-3 w-3 rounded-full bg-status-offline" />
               <span className="text-sm font-medium">
-                <span className="text-lg font-semibold" data-testid="text-offline-count">{offlineCount}</span> Offline
+                <span
+                  className="text-lg font-semibold"
+                  data-testid="text-offline-count"
+                >
+                  {offlineCount}
+                </span>{" "}
+                Offline
               </span>
             </div>
             <div className="flex items-center gap-2 rounded-lg bg-muted px-4 py-2 border">
               <Users className="h-4 w-4" />
               <span className="text-sm font-medium">
-                <span className="text-lg font-semibold" data-testid="text-total-count">{brokers.length}</span> Total
+                <span
+                  className="text-lg font-semibold"
+                  data-testid="text-total-count"
+                >
+                  {brokers.length}
+                </span>{" "}
+                Total
               </span>
             </div>
           </div>
 
-          <Tabs value={filter} onValueChange={(v) => setFilter(v as FilterType)}>
+          <Tabs
+            value={filter}
+            onValueChange={(v) => setFilter(v as FilterType)}
+          >
             <TabsList>
               <TabsTrigger value="all" data-testid="tab-all">
                 Todos
@@ -225,8 +252,8 @@ export default function Home() {
               {filter === "all"
                 ? "Nenhum corretor cadastrado"
                 : filter === "online"
-                ? "Nenhum corretor online"
-                : "Nenhum corretor offline"}
+                  ? "Nenhum corretor online"
+                  : "Nenhum corretor offline"}
             </h3>
             <p className="text-muted-foreground mb-6 max-w-sm">
               {filter === "all"
@@ -234,19 +261,27 @@ export default function Home() {
                 : "Não há corretores com este status no momento."}
             </p>
             {filter === "all" && (
-              <Button onClick={() => setAddDialogOpen(true)} data-testid="button-add-first-broker">
+              <Button
+                onClick={() => setAddDialogOpen(true)}
+                data-testid="button-add-first-broker"
+              >
                 <UserPlus className="h-4 w-4 mr-2" />
                 Adicionar Primeiro Corretor
               </Button>
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="grid-brokers">
+          <div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            data-testid="grid-brokers"
+          >
             {filteredBrokers.map((broker) => (
               <BrokerCard
                 key={broker.id}
                 broker={broker}
-                onToggleStatus={(id, isOnline) => toggleStatusMutation.mutate({ id, isOnline })}
+                onToggleStatus={(id, isOnline) =>
+                  toggleStatusMutation.mutate({ id, isOnline })
+                }
                 onEdit={(broker) => {
                   setSelectedBroker(broker);
                   setEditDialogOpen(true);
