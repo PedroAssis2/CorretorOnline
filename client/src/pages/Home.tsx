@@ -138,7 +138,7 @@ export default function Home() {
             <div className="flex items-center gap-3">
               <div>
                 <img
-                  src="/log.png"
+                  src="/logol.png"
                   alt="Logo Itamar Imóveis"
                   className="h-20 w-auto object-contain"
                 />
