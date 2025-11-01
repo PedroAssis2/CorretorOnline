@@ -9,8 +9,9 @@ Aplicativo web para controle em tempo real do status online/offline dos corretor
 - **CRUD de Corretores**: Adicionar, editar, visualizar e excluir corretores
 - **Toggle de Status**: Alternar status online/offline com um clique
 - **Filtros Inteligentes**: Visualizar todos, apenas online ou apenas offline
+- **Filtros por Região**: Organizar corretores por "Praia do Morro" e "Centro"
 - **Atualizações em Tempo Real**: WebSocket para sincronização instantânea entre múltiplas telas
-- **Dashboard Visual**: Cards elegantes com indicadores coloridos de status
+- **Dashboard Visual**: Cards elegantes com indicadores coloridos de status e região
 - **Design Responsivo**: Interface adaptável para desktop, tablet e mobile
 
 ### Características Técnicas
@@ -58,6 +59,7 @@ Broker {
   email: string
   phone: string
   photoUrl: string | null (opcional)
+  region: "Praia do Morro" | "Centro"
   isOnline: boolean
 }
 ```
@@ -69,6 +71,10 @@ Broker {
 - **Offline**: Vermelho `hsl(0 72% 55%)` - indica indisponibilidade
 - **Primary**: Azul profissional `hsl(210 85% 45%)` - branding imobiliário
 
+### Cores de Região
+- **Praia do Morro**: Azul claro - badge com bordas azuis
+- **Centro**: Laranja claro - badge com bordas laranjas
+
 ### Layout
 - Desktop: Grid de 3 colunas
 - Tablet: Grid de 2 colunas
@@ -76,10 +82,10 @@ Broker {
 - Container: max-width 7xl com padding responsivo
 
 ### Componentes Principais
-- **BrokerCard**: Card individual com avatar, info de contato, badge de status e toggle
+- **BrokerCard**: Card individual com avatar, info de contato, badges de status e região, e toggle
 - **StatusBadge**: Indicador visual colorido com ícone e texto
-- **AddBrokerDialog**: Modal para adicionar novo corretor
-- **EditBrokerDialog**: Modal para editar dados do corretor
+- **AddBrokerDialog**: Modal para adicionar novo corretor (com seleção de região)
+- **EditBrokerDialog**: Modal para editar dados do corretor (incluindo região)
 - **DeleteConfirmDialog**: Confirmação antes de excluir
 
 ## Como Usar
@@ -87,11 +93,12 @@ Broker {
 ### Para Secretárias
 1. Acesse a aplicação no navegador
 2. Visualize todos os corretores na tela principal
-3. Use os **filtros** (Todos/Online/Offline) para encontrar corretores específicos
-4. **Toggle o switch** ao lado de cada corretor para mudar o status
-5. Clique em **"Adicionar Corretor"** para cadastrar novos membros da equipe
-6. Use **"Editar"** para atualizar informações de contato
-7. Use **"Excluir"** para remover corretores (requer confirmação)
+3. Use os **filtros de status** (Todos/Online/Offline) para encontrar corretores específicos
+4. Use os **filtros de região** (Todas/Praia do Morro/Centro) para organizar por localização
+5. **Toggle o switch** ao lado de cada corretor para mudar o status
+6. Clique em **"Adicionar Corretor"** para cadastrar novos membros da equipe (selecione a região)
+7. Use **"Editar"** para atualizar informações de contato e região
+8. Use **"Excluir"** para remover corretores (requer confirmação)
 
 ### Atualizações em Tempo Real
 - Quando uma secretária atualiza o status de um corretor, **todas as telas abertas são atualizadas automaticamente**
