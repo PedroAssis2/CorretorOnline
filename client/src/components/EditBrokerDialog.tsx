@@ -2,9 +2,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertBrokerSchema, type InsertBroker, type Broker } from "@shared/schema";
+import { insertBrokerSchema, type InsertBroker, type Broker, regions } from "@shared/schema";
 import { Pencil } from "lucide-react";
 import { useEffect } from "react";
 
@@ -24,6 +25,7 @@ export function EditBrokerDialog({ broker, open, onOpenChange, onEdit, isPending
       email: "",
       phone: "",
       photoUrl: "",
+      region: "Centro",
     },
   });
 
@@ -34,6 +36,7 @@ export function EditBrokerDialog({ broker, open, onOpenChange, onEdit, isPending
         email: broker.email,
         phone: broker.phone,
         photoUrl: broker.photoUrl || "",
+        region: broker.region,
       });
     }
   }, [broker, form]);
@@ -129,6 +132,31 @@ export function EditBrokerDialog({ broker, open, onOpenChange, onEdit, isPending
                       {...field}
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="region"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Região</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger data-testid="select-edit-region">
+                        <SelectValue placeholder="Selecione a região" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {regions.map((region) => (
+                        <SelectItem key={region} value={region} data-testid={`option-edit-region-${region}`}>
+                          {region}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

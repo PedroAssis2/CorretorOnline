@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertBrokerSchema, type InsertBroker } from "@shared/schema";
+import { insertBrokerSchema, type InsertBroker, regions } from "@shared/schema";
 import { UserPlus } from "lucide-react";
 
 interface AddBrokerDialogProps {
@@ -23,6 +24,7 @@ export function AddBrokerDialog({ open, onOpenChange, onAdd, isPending }: AddBro
       email: "",
       phone: "",
       photoUrl: "",
+      region: "Centro",
     },
   });
 
@@ -116,6 +118,31 @@ export function AddBrokerDialog({ open, onOpenChange, onAdd, isPending }: AddBro
                       {...field}
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="region"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Região</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger data-testid="select-region">
+                        <SelectValue placeholder="Selecione a região" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {regions.map((region) => (
+                        <SelectItem key={region} value={region} data-testid={`option-region-${region}`}>
+                          {region}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
