@@ -36,7 +36,7 @@ export function EditBrokerDialog({ broker, open, onOpenChange, onEdit, isPending
         email: broker.email,
         phone: broker.phone,
         photoUrl: broker.photoUrl || "",
-        region: broker.region,
+        region: broker.region as "Centro" | "Praia" | "Morro",
       });
     }
   }, [broker, form]);
@@ -130,6 +130,7 @@ export function EditBrokerDialog({ broker, open, onOpenChange, onEdit, isPending
                       placeholder="https://exemplo.com/foto.jpg"
                       data-testid="input-edit-photo-url"
                       {...field}
+                      value={field.value || ""}
                     />
                   </FormControl>
                   <FormMessage />

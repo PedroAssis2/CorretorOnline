@@ -2,7 +2,8 @@ import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Pencil, Trash2, Mail, Phone } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Pencil, Trash2, Mail, Phone, MapPin } from "lucide-react";
 import { StatusBadge } from "./StatusBadge";
 import type { Broker } from "@shared/schema";
 
@@ -20,6 +21,12 @@ export function BrokerCard({ broker, onToggleStatus, onEdit, onDelete }: BrokerC
     .join("")
     .toUpperCase()
     .slice(0, 2);
+
+  const regionColor = {
+    Praia: "bg-blue-100 text-blue-800 border-blue-200",
+    Morro: "bg-green-100 text-green-800 border-green-200",
+    Centro: "bg-orange-100 text-orange-800 border-orange-200",
+  };
 
   return (
     <Card
@@ -44,11 +51,21 @@ export function BrokerCard({ broker, onToggleStatus, onEdit, onDelete }: BrokerC
         </div>
 
         {/* Name */}
-        <div className="text-center space-y-1">
+        <div className="text-center space-y-2">
           <h3 className="text-lg font-semibold tracking-tight" data-testid={`text-name-${broker.id}`}>
             {broker.name}
           </h3>
-          <StatusBadge isOnline={broker.isOnline} />
+          <div className="flex items-center justify-center gap-2 flex-wrap">
+            <StatusBadge isOnline={broker.isOnline} />
+            <Badge 
+              variant="outline" 
+              className={`${regionColor[broker.region as keyof typeof regionColor]} flex items-center gap-1`}
+              data-testid={`badge-region-${broker.id}`}
+            >
+              <MapPin className="h-3 w-3" />
+              {broker.region}
+            </Badge>
+          </div>
         </div>
 
         {/* Contact info */}

@@ -116,6 +116,7 @@ export function AddBrokerDialog({ open, onOpenChange, onAdd, isPending }: AddBro
                       placeholder="https://exemplo.com/foto.jpg"
                       data-testid="input-photo-url"
                       {...field}
+                      value={field.value || ""}
                     />
                   </FormControl>
                   <FormMessage />
