@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UserPlus, Building2, Users } from "lucide-react";
+import { UserPlus, Building2, Users, MapPin } from "lucide-react";
 import { BrokerCard } from "@/components/BrokerCard";
 import { AddBrokerDialog } from "@/components/AddBrokerDialog";
 import { EditBrokerDialog } from "@/components/EditBrokerDialog";
@@ -10,10 +10,12 @@ import { DeleteConfirmDialog } from "@/components/DeleteConfirmDialog";
 import { useToast } from "@/hooks/use-toast";
 import { useWebSocket } from "@/hooks/useWebSocket";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import type { Broker, InsertBroker } from "@shared/schema";
+import type { Broker, InsertBroker, Region } from "@shared/schema";
+import { regions } from "@shared/schema";
 import { Skeleton } from "@/components/ui/skeleton";
 
 type FilterType = "all" | "online" | "offline";
+type RegionFilterType = "all" | Region;
 
 export default function Home() {
   const { toast } = useToast();
@@ -21,6 +23,7 @@ export default function Home() {
   // Connect to WebSocket for real-time updates
   useWebSocket();
   const [filter, setFilter] = useState<FilterType>("all");
+  const [regionFilter, setRegionFilter] = useState<RegionFilterType>("all");
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -120,14 +123,28 @@ export default function Home() {
 
   // Filter brokers
   const filteredBrokers = brokers.filter((broker) => {
-    if (filter === "online") return broker.isOnline;
-    if (filter === "offline") return !broker.isOnline;
-    return true;
+    const statusMatch = 
+      filter === "all" || 
+      (filter === "online" && broker.isOnline) || 
+      (filter === "offline" && !broker.isOnline);
+    
+    const regionMatch = 
+      regionFilter === "all" || 
+      broker.region === regionFilter;
+    
+    return statusMatch && regionMatch;
   });
 
   // Stats
   const onlineCount = brokers.filter((b) => b.isOnline).length;
   const offlineCount = brokers.filter((b) => !b.isOnline).length;
+  
+  // Region stats
+  const regionCounts = {
+    Praia: brokers.filter((b) => b.region === "Praia").length,
+    Morro: brokers.filter((b) => b.region === "Morro").length,
+    Centro: brokers.filter((b) => b.region === "Centro").length,
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -162,63 +179,93 @@ export default function Home() {
 
       {/* Main content */}
       <main className="container mx-auto px-4 py-8">
-        {/* Stats and filters */}
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex flex-wrap gap-4">
-            <div className="flex items-center gap-2 rounded-lg bg-status-online/10 px-4 py-2 border border-status-online/20">
-              <div className="h-3 w-3 rounded-full bg-status-online animate-pulse" />
-              <span className="text-sm font-medium">
-                <span
-                  className="text-lg font-semibold"
-                  data-testid="text-online-count"
-                >
-                  {onlineCount}
-                </span>{" "}
-                Online
-              </span>
-            </div>
-            <div className="flex items-center gap-2 rounded-lg bg-status-offline/10 px-4 py-2 border border-status-offline/20">
-              <div className="h-3 w-3 rounded-full bg-status-offline" />
-              <span className="text-sm font-medium">
-                <span
-                  className="text-lg font-semibold"
-                  data-testid="text-offline-count"
-                >
-                  {offlineCount}
-                </span>{" "}
-                Offline
-              </span>
-            </div>
-            <div className="flex items-center gap-2 rounded-lg bg-muted px-4 py-2 border">
-              <Users className="h-4 w-4" />
-              <span className="text-sm font-medium">
-                <span
-                  className="text-lg font-semibold"
-                  data-testid="text-total-count"
-                >
-                  {brokers.length}
-                </span>{" "}
-                Total
-              </span>
-            </div>
+        {/* Stats */}
+        <div className="mb-6 flex flex-wrap gap-4">
+          <div className="flex items-center gap-2 rounded-lg bg-status-online/10 px-4 py-2 border border-status-online/20">
+            <div className="h-3 w-3 rounded-full bg-status-online animate-pulse" />
+            <span className="text-sm font-medium">
+              <span
+                className="text-lg font-semibold"
+                data-testid="text-online-count"
+              >
+                {onlineCount}
+              </span>{" "}
+              Online
+            </span>
+          </div>
+          <div className="flex items-center gap-2 rounded-lg bg-status-offline/10 px-4 py-2 border border-status-offline/20">
+            <div className="h-3 w-3 rounded-full bg-status-offline" />
+            <span className="text-sm font-medium">
+              <span
+                className="text-lg font-semibold"
+                data-testid="text-offline-count"
+              >
+                {offlineCount}
+              </span>{" "}
+              Offline
+            </span>
+          </div>
+          <div className="flex items-center gap-2 rounded-lg bg-muted px-4 py-2 border">
+            <Users className="h-4 w-4" />
+            <span className="text-sm font-medium">
+              <span
+                className="text-lg font-semibold"
+                data-testid="text-total-count"
+              >
+                {brokers.length}
+              </span>{" "}
+              Total
+            </span>
+          </div>
+        </div>
+
+        {/* Filters */}
+        <div className="mb-8 flex flex-wrap items-center gap-4">
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-muted-foreground">Filtrar por Status:</label>
+            <Tabs
+              value={filter}
+              onValueChange={(v) => setFilter(v as FilterType)}
+            >
+              <TabsList>
+                <TabsTrigger value="all" data-testid="tab-all">
+                  Todos
+                </TabsTrigger>
+                <TabsTrigger value="online" data-testid="tab-online">
+                  Online
+                </TabsTrigger>
+                <TabsTrigger value="offline" data-testid="tab-offline">
+                  Offline
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
           </div>
 
-          <Tabs
-            value={filter}
-            onValueChange={(v) => setFilter(v as FilterType)}
-          >
-            <TabsList>
-              <TabsTrigger value="all" data-testid="tab-all">
-                Todos
-              </TabsTrigger>
-              <TabsTrigger value="online" data-testid="tab-online">
-                Online
-              </TabsTrigger>
-              <TabsTrigger value="offline" data-testid="tab-offline">
-                Offline
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-muted-foreground">Filtrar por Região:</label>
+            <Tabs
+              value={regionFilter}
+              onValueChange={(v) => setRegionFilter(v as RegionFilterType)}
+            >
+              <TabsList>
+                <TabsTrigger value="all" data-testid="tab-region-all">
+                  Todas
+                </TabsTrigger>
+                <TabsTrigger value="Praia" data-testid="tab-region-praia">
+                  <MapPin className="h-3 w-3 mr-1" />
+                  Praia ({regionCounts.Praia})
+                </TabsTrigger>
+                <TabsTrigger value="Morro" data-testid="tab-region-morro">
+                  <MapPin className="h-3 w-3 mr-1" />
+                  Morro ({regionCounts.Morro})
+                </TabsTrigger>
+                <TabsTrigger value="Centro" data-testid="tab-region-centro">
+                  <MapPin className="h-3 w-3 mr-1" />
+                  Centro ({regionCounts.Centro})
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
         </div>
 
         {/* Brokers grid */}
