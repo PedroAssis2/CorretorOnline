@@ -132,7 +132,7 @@ export function AddBrokerDialog({ open, onOpenChange, onAdd, isPending }: AddBro
                   <FormLabel>Região</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger className="bg-background border-input" data-testid="select-region">
+                      <SelectTrigger className="bg-white dark:bg-gray-800 border-2 shadow-sm" data-testid="select-region">
                         <SelectValue placeholder="Selecione a região" />
                       </SelectTrigger>
                     </FormControl>

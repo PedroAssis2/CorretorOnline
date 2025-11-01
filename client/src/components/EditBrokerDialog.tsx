@@ -146,7 +146,7 @@ export function EditBrokerDialog({ broker, open, onOpenChange, onEdit, isPending
                   <FormLabel>Região</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                     <FormControl>
-                      <SelectTrigger className="bg-background border-input" data-testid="select-edit-region">
+                      <SelectTrigger className="bg-white dark:bg-gray-800 border-2 shadow-sm" data-testid="select-edit-region">
                         <SelectValue placeholder="Selecione a região" />
                       </SelectTrigger>
                     </FormControl>
