@@ -36,7 +36,7 @@ export function EditBrokerDialog({ broker, open, onOpenChange, onEdit, isPending
         email: broker.email,
         phone: broker.phone,
         photoUrl: broker.photoUrl || "",
-        region: broker.region as "Centro" | "Praia" | "Morro",
+        region: broker.region as "Centro" | "Praia do Morro",
       });
     }
   }, [broker, form]);
@@ -146,7 +146,7 @@ export function EditBrokerDialog({ broker, open, onOpenChange, onEdit, isPending
                   <FormLabel>Região</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                     <FormControl>
-                      <SelectTrigger data-testid="select-edit-region">
+                      <SelectTrigger className="bg-background border-input" data-testid="select-edit-region">
                         <SelectValue placeholder="Selecione a região" />
                       </SelectTrigger>
                     </FormControl>

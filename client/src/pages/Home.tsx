@@ -141,9 +141,8 @@ export default function Home() {
   
   // Region stats
   const regionCounts = {
-    Praia: brokers.filter((b) => b.region === "Praia").length,
-    Morro: brokers.filter((b) => b.region === "Morro").length,
-    Centro: brokers.filter((b) => b.region === "Centro").length,
+    "Praia do Morro": brokers.filter((b) => b.region === "Praia do Morro").length,
+    "Centro": brokers.filter((b) => b.region === "Centro").length,
   };
 
   return (
@@ -251,17 +250,13 @@ export default function Home() {
                 <TabsTrigger value="all" data-testid="tab-region-all">
                   Todas
                 </TabsTrigger>
-                <TabsTrigger value="Praia" data-testid="tab-region-praia">
+                <TabsTrigger value="Praia do Morro" data-testid="tab-region-praia">
                   <MapPin className="h-3 w-3 mr-1" />
-                  Praia ({regionCounts.Praia})
-                </TabsTrigger>
-                <TabsTrigger value="Morro" data-testid="tab-region-morro">
-                  <MapPin className="h-3 w-3 mr-1" />
-                  Morro ({regionCounts.Morro})
+                  Praia do Morro ({regionCounts["Praia do Morro"]})
                 </TabsTrigger>
                 <TabsTrigger value="Centro" data-testid="tab-region-centro">
                   <MapPin className="h-3 w-3 mr-1" />
-                  Centro ({regionCounts.Centro})
+                  Centro ({regionCounts["Centro"]})
                 </TabsTrigger>
               </TabsList>
             </Tabs>
