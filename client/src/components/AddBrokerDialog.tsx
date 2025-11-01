@@ -1,9 +1,28 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertBrokerSchema, type InsertBroker, regions } from "@shared/schema";
@@ -16,7 +35,12 @@ interface AddBrokerDialogProps {
   isPending: boolean;
 }
 
-export function AddBrokerDialog({ open, onOpenChange, onAdd, isPending }: AddBrokerDialogProps) {
+export function AddBrokerDialog({
+  open,
+  onOpenChange,
+  onAdd,
+  isPending,
+}: AddBrokerDialogProps) {
   const form = useForm<InsertBroker>({
     resolver: zodResolver(insertBrokerSchema),
     defaultValues: {
@@ -35,19 +59,27 @@ export function AddBrokerDialog({ open, onOpenChange, onAdd, isPending }: AddBro
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md" data-testid="dialog-add-broker">
+      <DialogContent
+        className="sm:max-w-md bg-[#111] text-white border border-gray-700 shadow-xl"
+        data-testid="dialog-add-broker"
+      >
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-xl">
+          <DialogTitle className="flex items-center gap-2 text-xl text-white">
             <UserPlus className="h-5 w-5" />
             Adicionar Corretor
           </DialogTitle>
-          <DialogDescription>
-            Preencha os dados do novo corretor. Todos os campos são obrigatórios exceto a foto.
+          <DialogDescription className="text-gray-400">
+            Preencha os dados do novo corretor. Todos os campos são obrigatórios
+            exceto a foto.
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4"
+          >
+            {/* Nome */}
             <FormField
               control={form.control}
               name="name"
@@ -59,6 +91,7 @@ export function AddBrokerDialog({ open, onOpenChange, onAdd, isPending }: AddBro
                       placeholder="João Silva"
                       data-testid="input-name"
                       {...field}
+                      className="bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:ring-gray-500"
                     />
                   </FormControl>
                   <FormMessage />
@@ -66,6 +99,7 @@ export function AddBrokerDialog({ open, onOpenChange, onAdd, isPending }: AddBro
               )}
             />
 
+            {/* Email */}
             <FormField
               control={form.control}
               name="email"
@@ -78,6 +112,7 @@ export function AddBrokerDialog({ open, onOpenChange, onAdd, isPending }: AddBro
                       placeholder="joao.silva@itamarimoveis.com.br"
                       data-testid="input-email"
                       {...field}
+                      className="bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:ring-gray-500"
                     />
                   </FormControl>
                   <FormMessage />
@@ -85,6 +120,7 @@ export function AddBrokerDialog({ open, onOpenChange, onAdd, isPending }: AddBro
               )}
             />
 
+            {/* Telefone */}
             <FormField
               control={form.control}
               name="phone"
@@ -97,6 +133,7 @@ export function AddBrokerDialog({ open, onOpenChange, onAdd, isPending }: AddBro
                       placeholder="(11) 99999-9999"
                       data-testid="input-phone"
                       {...field}
+                      className="bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:ring-gray-500"
                     />
                   </FormControl>
                   <FormMessage />
@@ -104,6 +141,7 @@ export function AddBrokerDialog({ open, onOpenChange, onAdd, isPending }: AddBro
               )}
             />
 
+            {/* URL da Foto */}
             <FormField
               control={form.control}
               name="photoUrl"
@@ -117,6 +155,7 @@ export function AddBrokerDialog({ open, onOpenChange, onAdd, isPending }: AddBro
                       data-testid="input-photo-url"
                       {...field}
                       value={field.value || ""}
+                      className="bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:ring-gray-500"
                     />
                   </FormControl>
                   <FormMessage />
@@ -124,21 +163,33 @@ export function AddBrokerDialog({ open, onOpenChange, onAdd, isPending }: AddBro
               )}
             />
 
+            {/* Região estilizada */}
             <FormField
               control={form.control}
               name="region"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Região</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
-                      <SelectTrigger className="bg-white dark:bg-gray-800 border-2 shadow-sm" data-testid="select-region">
-                        <SelectValue placeholder="Selecione a região" />
+                      <SelectTrigger
+                        className="bg-black text-white border border-gray-700 shadow-md rounded-md focus:ring-2 focus:ring-gray-500 transition"
+                        data-testid="select-region"
+                      >
+                        <SelectValue placeholder="Selecione" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="bg-black text-white border border-gray-700 shadow-lg">
                       {regions.map((region) => (
-                        <SelectItem key={region} value={region} data-testid={`option-region-${region}`}>
+                        <SelectItem
+                          key={region}
+                          value={region}
+                          data-testid={`option-region-${region}`}
+                          className="hover:bg-gray-800"
+                        >
                           {region}
                         </SelectItem>
                       ))}
@@ -149,6 +200,7 @@ export function AddBrokerDialog({ open, onOpenChange, onAdd, isPending }: AddBro
               )}
             />
 
+            {/* Botões */}
             <div className="flex gap-3 pt-4">
               <Button
                 type="button"
@@ -157,7 +209,7 @@ export function AddBrokerDialog({ open, onOpenChange, onAdd, isPending }: AddBro
                   form.reset();
                   onOpenChange(false);
                 }}
-                className="flex-1"
+                className="flex-1 border-gray-600 text-gray-200 hover:bg-gray-800"
                 data-testid="button-cancel"
               >
                 Cancelar
@@ -165,7 +217,7 @@ export function AddBrokerDialog({ open, onOpenChange, onAdd, isPending }: AddBro
               <Button
                 type="submit"
                 disabled={isPending}
-                className="flex-1"
+                className="flex-1 bg-white text-black hover:bg-gray-200 font-semibold"
                 data-testid="button-submit"
               >
                 {isPending ? "Adicionando..." : "Adicionar"}
