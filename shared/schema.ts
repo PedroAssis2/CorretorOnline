@@ -2,7 +2,7 @@ import { pgTable, text, varchar, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const regions = ["Praia do Morro", "Centro"] as const;
+export const regions = ["Praia do Morro", "Centro", "Enseada"] as const;
 export type Region = typeof regions[number];
 
 export const brokers = pgTable("brokers", {
