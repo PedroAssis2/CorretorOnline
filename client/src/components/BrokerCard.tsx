@@ -25,6 +25,7 @@ export function BrokerCard({ broker, onToggleStatus, onEdit, onDelete }: BrokerC
   const regionColor = {
     "Praia do Morro": "bg-blue-100 text-blue-800 border-blue-200",
     "Centro": "bg-orange-100 text-orange-800 border-orange-200",
+    "Enseada": "bg-green-100 text-green-800 border-green-200",
   };
 
   return (
