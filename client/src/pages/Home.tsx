@@ -167,6 +167,7 @@ export default function Home() {
   const regionCounts = {
     "Praia do Morro": brokers.filter((b) => b.region === "Praia do Morro").length,
     "Centro": brokers.filter((b) => b.region === "Centro").length,
+    "Enseada": brokers.filter((b) => b.region === "Enseada").length,
   };
 
   return (
@@ -281,6 +282,10 @@ export default function Home() {
                 <TabsTrigger value="Centro" data-testid="tab-region-centro">
                   <MapPin className="h-3 w-3 mr-1" />
                   Centro ({regionCounts["Centro"]})
+                </TabsTrigger>
+                <TabsTrigger value="Enseada" data-testid="tab-region-enseada">
+                  <MapPin className="h-3 w-3 mr-1" />
+                  Enseada ({regionCounts["Enseada"]})
                 </TabsTrigger>
               </TabsList>
             </Tabs>
