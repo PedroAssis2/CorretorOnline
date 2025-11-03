@@ -28,6 +28,10 @@ export default function Home() {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedBroker, setSelectedBroker] = useState<Broker | null>(null);
+  
+  // Controle de ordem: armazena a ordem de clique (contador crescente)
+  const [clickOrder, setClickOrder] = useState<Record<string, number>>({});
+  const [orderCounter, setOrderCounter] = useState(1);
 
   // Fetch brokers
   const { data: brokers = [], isLoading } = useQuery<Broker[]>({
@@ -109,7 +113,16 @@ export default function Home() {
         isOnline,
       });
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      // Adiciona o corretor na fila de ordem (quanto menor o número, mais no topo)
+      setClickOrder(prev => ({
+        ...prev,
+        [variables.id]: orderCounter
+      }));
+      
+      // Incrementa o contador para o próximo clique
+      setOrderCounter(prev => prev + 1);
+      
       queryClient.invalidateQueries({ queryKey: ["/api/brokers"] });
     },
     onError: () => {
@@ -133,6 +146,17 @@ export default function Home() {
       broker.region === regionFilter;
     
     return statusMatch && regionMatch;
+  });
+
+  // ORDENAÇÃO: Corretores ordenados pela ordem de clique
+  // Quanto menor o número, mais no topo (1º clique = posição 1, 2º clique = posição 2...)
+  // Corretores que nunca foram clicados aparecem no final (ordem original)
+  const sortedBrokers = [...filteredBrokers].sort((a, b) => {
+    const orderA = clickOrder[a.id] || Infinity; // Infinity = nunca foi clicado
+    const orderB = clickOrder[b.id] || Infinity;
+    
+    // Ordem crescente: menor número primeiro
+    return orderA - orderB;
   });
 
   // Stats
@@ -285,7 +309,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-        ) : filteredBrokers.length === 0 ? (
+        ) : sortedBrokers.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="rounded-full bg-muted p-6 mb-4">
               <Users className="h-12 w-12 text-muted-foreground" />
@@ -317,7 +341,7 @@ export default function Home() {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             data-testid="grid-brokers"
           >
-            {filteredBrokers.map((broker) => (
+            {sortedBrokers.map((broker) => (
               <BrokerCard
                 key={broker.id}
                 broker={broker}
